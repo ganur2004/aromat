@@ -1,0 +1,111 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация продавца</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static "report/seller_register.css" %}">
+    <link rel="stylesheet" href="{% static "report/menu.css" %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+</head>
+<body>
+    <nav class="col-sm-12 col-md-12 col-lg-12">
+        <div  class="wrapper col-sm-12 col-md-12 col-lg-12" id="wrapper">
+            <div class="logo-div">
+                <div class="logo"><a href="#" title="Главная"></a></div>
+                <div class="welcome-text">
+                    <span style="font-weight: bold;">Администратор: </span>
+                    <span style="font-weight: normal;">{{ admin_name }}</span>
+                </div>
+            </div>
+          <input type="radio" name="slider" id="menu-btn">
+          <input type="radio" name="slider" id="close-btn">
+          <ul class="nav-links">
+            <label for="close-btn" class="btn close-btn"><i class="fas fa-times"></i></label>
+            <li><a href="photo.html">Главная</a></li>
+            <li><a href="{% url 'aromat_list' %}">Ароматы</a></li>
+            <li><a href="{% url 'seller_report' %}">Отчеты</a></li>
+            <li><a href="{% url 'aromat_add' %}">Добавить</a></li>
+            <li><a class="active-nav-links" href="{% url 'seller_register' %}">Продавец</a></li>
+            <li><a id="logout" href="{% url 'logout' %}"><img src="{% static "image/Logout.png" %}" alt="logout" width="auto" height="40px"></a></li>
+          </ul>
+          <label for="menu-btn" class="btn menu-btn"><i class="fas fa-bars"></i></label>
+        </div>
+    </nav>
+    <div class="body col-sm-12 col-md-12 col-lg-12">
+        <div class="main col-sm-12 col-md-12 col-lg-12">
+            <h2 class="title">Регистрация продавца</h2>
+            <div class="input-form col-sm-12 col-md-9 col-lg-6">
+                {% if message %}
+                    <p>{{ message }}</p>
+                {% endif %}
+                <form action="{% url 'seller_register' %}" method="post">
+                    {% csrf_token %}
+                    <div class="input-div">
+                        {{ form.lastname.label_tag }}
+                        {{ form.lastname }}
+                    </div>
+                    <div class="input-div">
+                        {{ form.firstname.label_tag }}
+                        {{ form.firstname }}
+                    </div>
+                    <div class="input-div">
+                        {{ form.phone_number.label_tag }}
+                        {{ form.phone_number }}
+                    </div>
+                    <div class="input-div">
+                        {{ form.password.label_tag }}
+                        <div class="password-div">
+                            {{ form.password }}
+                            <span class="toggle-password">👁️</span>
+                        </div>
+                        <span id="password-text">! Пароль должен содержать минимум 6 символов, включая латинские буквы и цифры</span>
+                    </div>
+                    <div class="input-div">
+                        <button type="submit" class="button">Регистрация</button>
+                    </div>
+            </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        document.getElementById('phone').addEventListener('input', function (e) {
+            var x = e.target.value.replace(/\D/g, '');
+            var formattedValue = '';
+
+            if (x.length > 0) {
+                formattedValue = '8';
+            }
+            if (x.length > 1) {
+                formattedValue += '-' + x.substring(1, 4);
+            }
+            if (x.length > 4) {
+                formattedValue += '-' + x.substring(4, 7);
+            }
+            if (x.length > 7) {
+                formattedValue += '-' + x.substring(7, 11);
+            }
+
+            e.target.value = formattedValue;
+        });
+    </script>
+
+    <script>
+        document.querySelector('.toggle-password').addEventListener('click', function () {
+            var passwordInput = document.getElementById('password');
+            var type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.textContent = type === 'password' ? '👁️' : '🙈';
+        });
+    </script>
+</body>
+</html>

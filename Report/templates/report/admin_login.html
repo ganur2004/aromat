@@ -1,0 +1,110 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Логин</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'report/admin_login.css' %}">
+</head>
+<body>
+    <div class="body col-sm-12 col-md-12 col-lg-12">
+        <div class="menu col-sm-12 col-md-12 col-lg-12">
+            <div class="welcome-text col-sm-6 col-md-6 col-lg-6">
+                <span>Добро пожаловать</span>
+            </div>
+        </div>
+
+        <div class="main col-sm-12 col-md-12 col-lg-12">
+            <h2 class="title">Логин</h2>
+            <div class="input-form col-sm-12 col-md-9 col-lg-6">
+                {% if messages %}
+                    <ul>
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <form action="{% url 'admin_login' %}" method="post">
+                    {% csrf_token %}
+                    <div class="input-div">
+                        {{ form.phone_number.label_tag }}
+                        {{ form.phone_number }}
+                    </div>
+                    <div class="input-div">
+                        {{ form.password.label_tag }}
+                        <div class="password-div">
+                            {{ form.password }}
+                            <span class="toggle-password">👁️</span>
+                        </div>
+                        <span id="password-text">! Пароль должен содержать минимум 6 символов, включая латинские буквы и цифры</span>
+                    </div>
+                    <div class="input-div">
+                        <button type="submit" class="button">Логин</button>
+                    </div>
+                </form>
+            </div>
+        </div>        
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+    <script>
+        document.getElementById('phone').addEventListener('input', function (e) {
+            var x = e.target.value.replace(/\D/g, '');
+            var formattedValue = '';
+
+            if (x.length > 0) {
+                formattedValue = '8';
+            }
+            if (x.length > 1) {
+                formattedValue += '-' + x.substring(1, 4);
+            }
+            if (x.length > 4) {
+                formattedValue += '-' + x.substring(4, 7);
+            }
+            if (x.length > 7) {
+                formattedValue += '-' + x.substring(7, 11);
+            }
+
+            e.target.value = formattedValue;
+        });
+    </script>
+
+    <script>
+        document.querySelector('.toggle-password').addEventListener('click', function () {
+            var passwordInput = document.getElementById('password');
+            var type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.textContent = type === 'password' ? '👁️' : '🙈';
+        });
+    </script>
+
+
+
+    {% comment %} {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            {{ form.phone_number.label_tag }}<br>
+            {{ form.phone_number }}
+        </div>
+        <div>
+            {{ form.password.label_tag }}<br>
+            {{ form.password }}
+        </div>
+        <button type="submit">Login</button>
+    </form> {% endcomment %}
+</body>
+</html>

@@ -1,0 +1,87 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список ароматов</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static "report/aromat_list.css" %}">
+    <link rel="stylesheet" href="{% static "report/menu.css" %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+</head>
+<body>
+    <nav class="col-sm-12 col-md-12 col-lg-12">
+        <div  class="wrapper col-sm-12 col-md-12 col-lg-12" id="wrapper">
+            <div class="logo-div">
+                <div class="logo"><a href="#" title="Главная"></a></div>
+                <div class="welcome-text">
+                    <span style="font-weight: bold;">Администратор: </span>
+                    <span style="font-weight: normal;">{{ admin_name }}</span>
+                </div>
+            </div>
+          <input type="radio" name="slider" id="menu-btn">
+          <input type="radio" name="slider" id="close-btn">
+          <ul class="nav-links">
+            <label for="close-btn" class="btn close-btn"><i class="fas fa-times"></i></label>
+            <li><a href="photo.html">Главная</a></li>
+            <li><a href="{% url 'aromat_list' %}">Ароматы</a></li>
+            <li><a class="active-nav-links" href="{% url 'seller_report' %}">Отчеты</a></li>
+            <li><a href="{% url 'aromat_add' %}">Добавить</a></li>
+            <li><a href="{% url 'seller_register' %}">Продавец</a></li>
+            <li><a id="logout" href="{% url 'logout' %}"><img src="{% static "image/Logout.png" %}" alt="logout" width="auto" height="40px"></a></li>
+          </ul>
+          <label for="menu-btn" class="btn menu-btn"><i class="fas fa-bars"></i></label>
+        </div>
+    </nav>
+    <div class="body col-sm-12 col-md-12 col-lg-12">
+        <div class="filter">
+            <div class="filter-input">
+                <label for="date">Дата</label>
+                <input type="date" name="date" id="">
+            </div>
+            <div class="filter-input">
+                <label for="bytime">По времени</label>
+                <input type="text" name="bytime" id="">
+            </div>
+            <div class="filter-input-button">
+                <button id="button" class="fas fa-filter" type="submit"></button>
+            </div>
+        </div>
+        <div class="main col-sm-12 col-md-12 col-lg-12">
+            <div class="result-table col-sm-12 col-md-12 col-lg-10">
+                <table class="styled-table">
+                    <thead>
+                        <th>Код</th>
+                        <th>Имя</th>
+                        <th>Фамилия</th>
+                        <th>Номер</th>
+                        <th>Касса</th>
+                        <th>Отчет</th>
+                    </thead>
+                    <tbody>
+                        {% for seller in seller_objects %}
+                            <tr>
+                                <td>{{ seller.id }}</td>
+                                <td>{{ seller.firstname }}</td>
+                                <td>{{ seller.lastname }}</td>
+                                <td>{{ seller.phone_number }}</td>
+                                <td>Касса</td>
+                                <td id="action">
+                                    <button type="button" title="Отчет" id="button" class="fas fa-file"></button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
