@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Список ароматов</title>
+    <title>Главная</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static "report/seller_report.css" %}">
     <link rel="stylesheet" href="{% static "report/menu.css" %}">
@@ -25,9 +25,9 @@
           <input type="radio" name="slider" id="close-btn">
           <ul class="nav-links">
             <label for="close-btn" class="btn close-btn"><i class="fas fa-times"></i></label>
-            <li><a href="{% url 'aromat_sold_list_admin' %}">Главная</a></li>
+            <li><a class="active-nav-links" href="{% url 'aromat_sold_list_admin' %}">Главная</a></li>
             <li><a href="{% url 'aromat_list' %}">Ароматы</a></li>
-            <li><a class="active-nav-links" href="{% url 'seller_report' %}">Отчеты</a></li>
+            <li><a href="{% url 'seller_report' %}">Отчеты</a></li>
             <li><a href="{% url 'aromat_add' %}">Добавить</a></li>
             <li><a href="{% url 'seller_register' %}">Продавец</a></li>
             <li><a id="logout" href="{% url 'logout' %}"><img src="{% static "image/Logout.png" %}" alt="logout" width="auto" height="40px"></a></li>
@@ -40,20 +40,29 @@
             <div class="filter">
                 <form method="get" action="{% url 'aromat_list' %}">
                     <div class="filter-input">
-                        <label for="date">Дата</label>
-                        <select name="date" id="date">
-                            <option value="">Выберите дату</option>
+                        <label for="code">Код</label>
+                        <select name="code" id="code">
+                            <option value="">Выберите код</option>
                             {% for code in codes %}
                                 <option value="{{ code }}">{{ code }}</option>
                             {% endfor %}
                         </select>
                     </div>
                     <div class="filter-input">
-                        <label for="bytime">По времени</label>
-                        <select name="bytime" id="bytime">
-                            <option value="">Выберите время</option>
-                            {% for name in names %}
-                                <option value="{{ name }}">{{ name }}</option>
+                        <label for="paymenttype">Тип оплаты</label>
+                        <select name="paymenttype" id="paymenttype">
+                            <option value="">Выберите тип</option>
+                            {% for code in codes %}
+                                <option value="{{ code }}">{{ code }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="filter-input">
+                        <label for="date">Дата</label>
+                        <select name="date" id="date">
+                            <option value="">Выберите дату</option>
+                            {% for code in codes %}
+                                <option value="{{ code }}">{{ code }}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -69,27 +78,29 @@
             </div>
         </div>
         <div class="main col-sm-12 col-md-12 col-lg-12">
-            <div class="result-table col-sm-12 col-md-12 col-lg-10">
+            <div class="result-table col-sm-12 col-md-12 col-lg-12">
                 <table class="styled-table">
                     <thead>
                         <th>Код</th>
-                        <th>Имя</th>
-                        <th>Фамилия</th>
-                        <th>Номер</th>
+                        <th>Название аромата</th>
+                        <th>Обьем</th>
+                        <th>Масла</th>
+                        <th>Тип оплаты</th>
                         <th>Касса</th>
-                        <th>Отчет</th>
+                        <th>Дата</th>
+                        <th>Имя продавца</th>
                     </thead>
                     <tbody>
-                        {% for seller in seller_objects %}
+                        {% for aromat_sold in aromat_sold_list %}
                             <tr>
-                                <td>{{ seller.id }}</td>
-                                <td>{{ seller.firstname }}</td>
-                                <td>{{ seller.lastname }}</td>
-                                <td>{{ seller.phone_number }}</td>
-                                <td>Касса</td>
-                                <td id="action">
-                                    <button type="button" title="Отчет" id="button" class="fas fa-file"></button>
-                                </td>
+                                <td>{{ aromat_sold.code }}</td>
+                                <td>{{ aromat_sold.name }}</td>
+                                <td>{{ aromat_sold.volume }}</td>
+                                <td>{{ aromat_sold.masla }}</td>
+                                <td>{{ aromat_sold.paymenttype }}</td>
+                                <td>{{ aromat_sold.price }}</td>
+                                <td>{{ aromat_sold.date|date:"Y-m-d | H:i:s" }}</td>
+                                <td>{{ aromat_sold.sellername }}</td>
                             </tr>
                         {% endfor %}
                     </tbody>

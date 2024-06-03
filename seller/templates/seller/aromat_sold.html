@@ -26,7 +26,7 @@
           <input type="radio" name="slider" id="close-btn">
           <ul class="nav-links">
             <label for="close-btn" class="btn close-btn"><i class="fas fa-times"></i></label>
-            <li><a href="photo.html">Главная</a></li>
+            <li><a href="{% url 'aromat_sold_list' %}">Главная</a></li>
             <li><a class="active-nav-links" href="{% url 'aromat_sold' %}">Продано</a></li>
             <li><a id="logout" href="{% url 'seller_logout' %}"><img src="{% static "image/Logout.png" %}" alt="logout" width="auto" height="40px"></a></li>
           </ul>
@@ -40,28 +40,47 @@
                 {% if message %}
                     <p>{{ message }}</p>
                 {% endif %}
-                <form action="{% url 'aromat_sold' %}" method="post">
+                <form id="myForm" action="{% url 'aromat_sold' %}" method="post">
                     {% csrf_token %}
                     <div class="input-div">
                         {{ form.code.label_tag }}
                         {{ form.code }}
+                        {% if form.code.errors %}
+                            <div class="error">{{ form.code.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="input-div">
+                        {{ form.name.label_tag }}
+                        {{ form.name }}
+                        {% if form.name.errors %}
+                            <div class="error">{{ form.name.errors }}</div>
+                        {% endif %}
                     </div>
                     <div class="input-div">
                         {{ form.size.label_tag }}
                         {{ form.size }}
+                        {% if form.size.errors %}
+                            <div class="error">{{ form.size.errors }}</div>
+                        {% endif %}
                     </div>
                     <div class="input-div">
                         {{ form.cost.label_tag }}
                         {{ form.cost }}
+                        {% if form.cost.errors %}
+                            <div class="error">{{ form.cost.errors }}</div>
+                        {% endif %}
                     </div>
                     <div class="input-div">
                         {{ form.paymenttype.label_tag }}
                         {{ form.paymenttype }}
+                        {% if form.paymenttype.errors %}
+                            <div class="error">{{ form.paymenttype.errors }}</div>
+                        {% endif %}
                     </div>
                     <div class="input-div">
-                        <button type="submit" class="button">Продано</button>
+                        <button type="submit" onclick="confirmSubmit()" class="button">Продано</button>
                     </div>
-            </form>
+                </form>
             </div>
         </div>
     </div>
@@ -69,5 +88,52 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const codeField = document.getElementById('id_code');
+            const nameField = document.getElementById('id_name');
+    
+            const aromatData = {
+                {% for aromat in aromats %}
+                    '{{ aromat.code }}': '{{ aromat.name }}',
+                {% endfor %}
+            };
+    
+            const aromatDataReverse = {
+                {% for aromat in aromats %}
+                    '{{ aromat.name }}': '{{ aromat.code }}',
+                {% endfor %}
+            };
+    
+            codeField.addEventListener('change', function () {
+                const selectedCode = this.value;
+                console.log(selectedCode);
+                if (aromatData[selectedCode]) {
+                    nameField.value = aromatData[selectedCode];
+                } else {
+                    nameField.value = '';
+                }
+            });
+    
+            nameField.addEventListener('change', function () {
+                const selectedName = this.value;
+                if (aromatDataReverse[selectedName]) {
+                    codeField.value = aromatDataReverse[selectedName];
+                } else {
+                    codeField.value = '';
+                }
+            });
+        });
+    </script>
+
+    <script>
+        function confirmSubmit() {
+            if (confirm("Вы уверены, что хотите продать этот товар?")) {
+                document.getElementById("myForm").submit();
+            } else {
+                event.preventDefault();
+            }
+        }
+    </script>
 </body>
 </html>

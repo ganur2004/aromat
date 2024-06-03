@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import SellerLoginForm, AromatSoldForm
 #from Aromat.report.models import Seller
-from report.models import Seller, Aromat
+from report.models import Seller, Aromat, SoldAromat
 from django.contrib.auth import logout
+from django.utils import timezone
 
 # Create your views here.
 
@@ -23,7 +24,7 @@ def seller_login(request):
                     # Логика для входа (например, установка сессии или редирект)
                     request.session['seller_id'] = seller.id  # Пример установки сессии
                     print("Все успешно")
-                    return redirect('aromat_sold')  # Переход на страницу админ панели
+                    return redirect('aromat_sold_list')  # Переход на страницу админ панели
                 else:
                     messages.error(request, 'Неверный номер телефона или пароль!')
             except Seller.DoesNotExist:
@@ -34,37 +35,65 @@ def seller_login(request):
 
 def aromat_sold(request):
     seller_name = ""
+    message = None
     seller_id = request.session.get('seller_id')
     if seller_id:
         try:
             seller = Seller.objects.get(id=seller_id)
-            # Теперь у вас есть объект admin с данными администратора
             seller_name = f"{seller.lastname} {seller.firstname}"
         except Seller.DoesNotExist:
-            admin = None
+            seller = None
     else:
-        admin = None
+        seller = None
 
-    form = AromatSoldForm()
+    if request.method == 'POST':
+        form = AromatSoldForm(request.POST)
+        if form.is_valid():
+            code = form.cleaned_data['code']
+            aromat = Aromat.objects.get(code=code)
+            name = form.cleaned_data['name']
+            volume = aromat.volume
+            size = form.cleaned_data['size']
+            paymenttype = form.cleaned_data['paymenttype']
+            price = form.cleaned_data['cost']
+            date = timezone.now()  # Устанавливаем сегодняшнюю дату
+            sellername = seller_name
 
-    # if request.method == 'POST':
-    #     form = AromatSoldForm(request.POST)
-    #     if form.is_valid():
-    #         code = form.cleaned_data['code']
-    #         size = form.cleaned_data['size']
-    #         cost = form.cleaned_data['cost']
-    #         paymenttype = form.cleaned_data['paymenttype']
-            
-    #         if Aromat.objects.filter(code!=code).exists():
-    #             message = 'Аромат с таким кодом не существует.'
-    #         else:
-    #             new_aromat = Aromat(code=code, name=aromatname, volume=size, price=cost)
-    #             new_aromat.save()
-    #             message = 'Аромат успешно добавлен.'
-    # else:
-    #     form = AromatAddForm()
+            if volume >= size:
+                volume = aromat.volume - form.cleaned_data['size']
+                aromat.volume = volume
+                aromat.save()
+                new_sold_aromat = SoldAromat(seller_id=seller_id, code=code, name=name, volume=volume, masla=size, paymenttype=paymenttype, price=price, date=date, sellername=sellername)
+                new_sold_aromat.save()
+                message = 'Продажа успешно сохранена!'
+            else:
+                message = "Обьем этого аромата не хватает!"
 
-    return render(request, 'seller/aromat_sold.html', {"form": form, "seller_name": seller_name})
+
+    else:
+        form = AromatSoldForm()
+        initial_data = {'date': timezone.now().date(), 'sellername': seller_name}
+        form = AromatSoldForm(initial=initial_data)  # Передача начальных данных в форму
+    aromats = Aromat.objects.all()
+
+    return render(request, 'seller/aromat_sold.html', {"form": form, 'aromats': aromats, "seller_name": seller_name, 'message': message})
+
+def aromat_sold_list(request):
+    seller_name = ""
+    message = None
+    seller_id = request.session.get('seller_id')
+    if seller_id:
+        try:
+            seller = Seller.objects.get(id=seller_id)
+            seller_name = f"{seller.lastname} {seller.firstname}"
+        except Seller.DoesNotExist:
+            seller = None
+    else:
+        seller = None
+
+    aromat_sold_list = SoldAromat.objects.filter(seller_id=seller_id)
+
+    return render(request, "seller/aromat_sold_list.html", {"seller_name": seller_name, "aromat_sold_list": aromat_sold_list})
 
 def seller_logout(request):
     logout(request)

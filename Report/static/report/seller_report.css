@@ -2,6 +2,11 @@ body {
     font-family: 'Courier New', Courier, monospace;
 }
 
+.filter-div {
+    display: flex;
+    flex-wrap: wrap;
+}
+
 .filter {
     /* display: flex;
     flex-direction: row; */
@@ -43,6 +48,15 @@ body {
 .filter-input-button {
     display: flex;
     align-items: end;
+    
+}
+
+.all-sum {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: end;
+    flex-direction: column;
     
 }
 

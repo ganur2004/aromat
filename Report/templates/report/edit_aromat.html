@@ -5,9 +5,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Добавить аромат</title>
+    <title>Редактировать аромат</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{% static "report/aromat_add.css" %}">
+    <link rel="stylesheet" href="{% static "report/edit_aromat.css" %}">
     <link rel="stylesheet" href="{% static "report/menu.css" %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
@@ -26,10 +26,10 @@
           <input type="radio" name="slider" id="close-btn">
           <ul class="nav-links">
             <label for="close-btn" class="btn close-btn"><i class="fas fa-times"></i></label>
-            <li><a href="{% url 'aromat_sold_list_admin' %}">Главная</a></li>
+            <li><a href="photo.html">Главная</a></li>
             <li><a href="{% url 'aromat_list' %}">Ароматы</a></li>
             <li><a href="{% url 'seller_report' %}">Отчеты</a></li>
-            <li><a class="active-nav-links" href="{% url 'aromat_add' %}">Добавить</a></li>
+            <li><a href="{% url 'aromat_add' %}">Добавить</a></li>
             <li><a href="{% url 'seller_register' %}">Продавец</a></li>
             <li><a id="logout" href="{% url 'logout' %}"><img src="{% static "image/Logout.png" %}" alt="logout" width="auto" height="40px"></a></li>
           </ul>
@@ -38,33 +38,14 @@
     </nav>
     <div class="body col-sm-12 col-md-12 col-lg-12">
         <div class="main col-sm-12 col-md-12 col-lg-12">
-            <h2 class="title">Добавить аромат</h2>
+            <h2 class="title">Редактировать аромат</h2>
             <div class="input-form col-sm-12 col-md-9 col-lg-6">
-                {% if message %}
-                    <p>{{ message }}</p>
-                {% endif %}
-                <form action="{% url 'aromat_add' %}" method="post">
+                <form method="post">
                     {% csrf_token %}
-                    <div class="input-div">
-                        {{ form.code.label_tag }}
-                        {{ form.code }}
-                    </div>
-                    <div class="input-div">
-                        {{ form.aromatname.label_tag }}
-                        {{ form.aromatname }}
-                    </div>
-                    <div class="input-div">
-                        {{ form.size.label_tag }}
-                        {{ form.size }}
-                    </div>
-                    <div class="input-div">
-                        {{ form.cost.label_tag }}
-                        {{ form.cost }}
-                    </div>
-                    <div class="input-div">
-                        <button type="submit" class="button">Добавить</button>
-                    </div>
-            </form>
+                    {{ form.as_p }}
+                    <button type="submit">Сохранить</button> 
+                </form>
+                <a href="{% url 'aromat_list' %}">Отмена</a>
             </div>
         </div>
     </div>

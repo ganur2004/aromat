@@ -35,11 +35,14 @@ class Administrator(models.Model):
 class Aromat(models.Model):
     code = models.CharField(max_length=3, unique=True, verbose_name='Код')
     name = models.CharField(max_length=255, unique=True, verbose_name='Название')
-    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Цена')
+    # price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Цена')
     volume = models.DecimalField(max_digits=6, decimal_places=2, verbose_name='Объем')
 
     def __str__(self):
         return self.name
+
+    # def __str__(self):
+    #     return self.code  # Отображаем значение атрибута code
 
     class Meta:
         verbose_name = 'Аромат'
@@ -68,4 +71,20 @@ class Seller(models.Model):
         verbose_name = 'Продавец'
         verbose_name_plural = 'Продавцы'
 
-    
+class SoldAromat(models.Model):
+    seller_id = models.IntegerField(verbose_name="ID продавца")
+    code = models.CharField(max_length=3, verbose_name='Код')
+    name = models.CharField(max_length=100, verbose_name='Название аромата')
+    volume = models.DecimalField(max_digits=6, decimal_places=2, verbose_name='Объем', default=0)
+    masla = models.DecimalField(max_digits=6, decimal_places=2, verbose_name='Масла', default=0)
+    paymenttype = models.CharField(max_length=50, verbose_name='Тип оплаты')
+    price = models.DecimalField(max_digits=6, decimal_places=2, verbose_name='Касса', default=0)
+    date = models.DateTimeField(verbose_name='Дата')
+    sellername = models.CharField(max_length=100, verbose_name='Имя продавца')
+
+    class Meta:
+        verbose_name = 'Проданные ароматы'
+        verbose_name_plural = 'Проданные ароматы'
+
+    def __str__(self):
+        return f"{self.code} - {self.sellername} - {self.date}"

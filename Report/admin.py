@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib import admin
 from django.contrib.auth.hashers import make_password
-from .models import Administrator, Aromat, Seller
+from .models import Administrator, Aromat, Seller, SoldAromat
 
 
 # Administrator
@@ -45,7 +45,7 @@ class AdministratorAdmin(admin.ModelAdmin):
 
 # Aromat
 class AromatAdmin(admin.ModelAdmin):
-    list_display = ('code', 'name', 'volume', 'price')
+    list_display = ('code', 'name', 'volume')
     search_fields = ('code', 'name')
 
 
@@ -86,7 +86,12 @@ class SellerAdmin(admin.ModelAdmin):
         if obj is None:
             kwargs['form'] = self.add_form
         return super().get_form(request, obj, **kwargs)
+    
+class SoldAromatAdmin(admin.ModelAdmin):
+    list_display = ('sellername', 'code', 'name', 'date')
+    search_fields = ('sellername', 'code', 'name', 'date')
 
 admin.site.register(Administrator, AdministratorAdmin)
 admin.site.register(Aromat, AromatAdmin)
 admin.site.register(Seller, SellerAdmin)
+admin.site.register(SoldAromat, SoldAromatAdmin)

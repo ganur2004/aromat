@@ -9,6 +9,11 @@
     <link rel="stylesheet" href="{% static "report/aromat_list.css" %}">
     <link rel="stylesheet" href="{% static "report/menu.css" %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+     <!-- jQuery -->
+     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+     <!-- jQuery UI -->
+     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
 </head>
 <body>
@@ -25,7 +30,7 @@
           <input type="radio" name="slider" id="close-btn">
           <ul class="nav-links">
             <label for="close-btn" class="btn close-btn"><i class="fas fa-times"></i></label>
-            <li><a href="photo.html">Главная</a></li>
+            <li><a href="{% url 'aromat_sold_list_admin' %}">Главная</a></li>
             <li><a class="active-nav-links" href="{% url 'aromat_list' %}">Ароматы</a></li>
             <li><a href="{% url 'seller_report' %}">Отчеты</a></li>
             <li><a href="{% url 'aromat_add' %}">Добавить</a></li>
@@ -37,18 +42,31 @@
     </nav>
     <div class="body col-sm-12 col-md-12 col-lg-12">
         <div class="filter">
-            <div class="filter-input">
-                <label for="code">Код</label>
-                <input type="number" name="code" id="" min="100" maxlength="3">
-            </div>
-            <div class="filter-input">
-                <label for="aromatname">Название аромата</label>
-                <input type="text" name="aromatname" id="" maxlength="50">
-            </div>
-            <div class="filter-input-button">
-                <button id="button" class="fas fa-filter" type="submit"></button>
-            </div>
+            <form method="get" action="{% url 'aromat_list' %}">
+                <div class="filter-input">
+                    <label for="code">Код</label>
+                    <select name="code" id="code">
+                        <option value="">Выберите код</option>
+                        {% for code in codes %}
+                            <option value="{{ code }}">{{ code }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filter-input">
+                    <label for="aromatname">Название аромата</label>
+                    <select name="aromatname" id="aromatname">
+                        <option value="">Выберите название</option>
+                        {% for name in names %}
+                            <option value="{{ name }}">{{ name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filter-input-button">
+                    <button id="button" class="fas fa-filter" type="submit"></button>
+                </div>
+            </form>
         </div>
+        
         <div class="main col-sm-12 col-md-12 col-lg-12">
             <div class="result-table col-sm-12 col-md-12 col-lg-10">
                 <table class="styled-table">
@@ -56,7 +74,6 @@
                         <th>Код</th>
                         <th>Название аромата</th>
                         <th>Обьем</th>
-                        <th>Цена</th>
                         <th></th>
                     </thead>
                     <tbody>
@@ -65,10 +82,9 @@
                                 <td>{{ aromat.code }}</td>
                                 <td>{{ aromat.name }}</td>
                                 <td>{{ aromat.volume }}</td>
-                                <td>{{ aromat.price }}</td>
                                 <td id="action">
-                                    <button type="button" title="Редактировать" id="button" class="fas fa-pen"></button>
-                                    <button type="reser" title="Удалить" id="button" class="fas fa-trash"></button>
+                                    <a href="{% url 'edit_aromat' aromat.id %}"><button type="button" title="Редактировать" id="button" class="fas fa-pen"></button></a>
+                                    <a href="{% url 'delete_aromat' aromat.id %}" onclick="return confirm('Вы уверены, что хотите удалить этот аромат?');"><button type="button" title="Удалить" id="button" class="fas fa-trash"></button></a>
                                 </td>
                             </tr>
                         {% endfor %}

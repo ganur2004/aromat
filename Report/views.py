@@ -1,9 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .forms import AdminLoginForm, AromatAddForm, SellerRegisterForm
-from .models import Administrator, Aromat, Seller
+from .forms import AdminLoginForm, AromatAddForm, SellerRegisterForm, FilterForm, AromatForm
+from .models import Administrator, Aromat, Seller, SoldAromat
 from django.contrib.auth import logout
 from django.contrib.auth.hashers import make_password
+from django.http import JsonResponse
 
 # Create your views here.
 
@@ -23,7 +24,7 @@ def admin_login(request):
                     # Логика для входа (например, установка сессии или редирект)
                     request.session['admin_id'] = admin.id  # Пример установки сессии
                     print("Все успешно")
-                    return redirect('aromat_add')  # Переход на страницу админ панели
+                    return redirect('aromat_sold_list_admin')  # Переход на страницу админ панели
                 else:
                     messages.error(request, 'Неверный номер телефона или пароль!')
             except Administrator.DoesNotExist:
@@ -52,16 +53,15 @@ def aromat_add(request):
             code = form.cleaned_data['code']
             aromatname = form.cleaned_data['aromatname']
             size = form.cleaned_data['size']
-            cost = form.cleaned_data['cost']
             
             if Aromat.objects.filter(code=code).exists():
                 message = 'Аромат с таким кодом уже существует.'
             elif Aromat.objects.filter(name=aromatname).exists():
                 message = 'Аромат с таким названием уже существует.'
-            elif size <= 0 or cost <= 0:
-                message = 'Объем и цена должны быть положительными числами.'
+            elif size <= 0:
+                message = 'Объем должен быть положительными числами.'
             else:
-                new_aromat = Aromat(code=code, name=aromatname, volume=size, price=cost)
+                new_aromat = Aromat(code=code, name=aromatname, volume=size)
                 new_aromat.save()
                 message = 'Аромат успешно добавлен.'
     else:
@@ -82,9 +82,28 @@ def aromat_list(request):
     else:
         admin = None
 
+    code = request.GET.get('code')
+    aromatname = request.GET.get('aromatname')
+    aromat_objects = Aromat.objects.all()
+    
+    if code:
+        aromat_objects = aromat_objects.filter(code=code)
+    if aromatname:
+        aromat_objects = aromat_objects.filter(name__icontains=aromatname)
+    
+    # Получение уникальных значений кодов и названий
+    codes = Aromat.objects.values_list('code', flat=True).distinct()
+    names = Aromat.objects.values_list('name', flat=True).distinct()
+    context = {
+        'admin_name': admin_name,
+        'aromat_objects': aromat_objects,
+        'codes': codes,
+        'names': names
+    }
+
     aromat_objects = Aromat.objects.all()
 
-    return render(request, 'report/aromat_list.html', {'aromat_objects': aromat_objects, 'admin_name': admin_name})
+    return render(request, 'report/aromat_list.html', context)
 
 
 def seller_register(request):
@@ -142,6 +161,85 @@ def seller_report(request):
     seller_objects = Seller.objects.all()
 
     return render(request, 'report/seller_report.html', {"seller_objects": seller_objects, "admin_name": admin_name})
+
+def filter_view(request):
+    form = FilterForm(request.POST)
+    if request.method == 'POST':
+        print("Filter veiw")
+        form = FilterForm(request.POST)
+        if form.is_valid():
+            code = form.cleaned_data['code']
+            aromatname = form.cleaned_data['aromatname']
+            aromat_objects = Aromat.objects.all()
+            
+            if code:
+                aromat_objects = aromat_objects.filter(code=code)
+            if aromatname:
+                aromat_objects = aromat_objects.filter(name__icontains=aromatname)
+    
+            # Получение уникальных значений кодов и названий
+            codes = Aromat.objects.values_list('code', flat=True).distinct()
+            names = Aromat.objects.values_list('name', flat=True).distinct()
+            
+            context = {
+                'form': form,
+                'aromat_objects': aromat_objects,
+                'codes': codes,
+                'names': names
+            }
+    else:
+        form = FilterForm()
+
+    return render(request, 'report/aromat_list.html', {'form': form})
+
+def edit_aromat(request, pk):
+    message = None
+    aromat = get_object_or_404(Aromat, pk=pk)
+    admin_name = ""
+    admin_id = request.session.get('admin_id')
+    if admin_id:
+        try:
+            admin = Administrator.objects.get(id=admin_id)
+            # Теперь у вас есть объект admin с данными администратора
+            admin_name = f"{admin.last_name} {admin.first_name}"
+        except Administrator.DoesNotExist:
+            admin = None
+    else:
+        admin = None
+    if request.method == "POST":
+        form = AromatForm(request.POST, instance=aromat)
+        if form.is_valid():
+            form.save()
+            return redirect('aromat_list')
+        
+    else:
+        form = AromatForm(instance=aromat)
+    return render(request, 'report/edit_aromat.html', {'form': form, 'message': message, "admin_name": admin_name})
+
+def delete_aromat(request, pk):
+    aromat = get_object_or_404(Aromat, pk=pk)
+    if request.method == "POST":
+        aromat.delete()
+        return redirect('aromat_list')
+    return render(request, 'report/confirm_delete.html', {'aromat': aromat})
+
+
+def aromat_sold_list_admin(request):
+    admin_name = ""
+    admin_id = request.session.get('admin_id')
+    if admin_id:
+        try:
+            admin = Administrator.objects.get(id=admin_id)
+            # Теперь у вас есть объект admin с данными администратора
+            admin_name = f"{admin.last_name} {admin.first_name}"
+        except Administrator.DoesNotExist:
+            admin = None
+    else:
+        admin = None
+
+    aromat_sold_list = SoldAromat.objects.all()
+
+    return render(request, 'report/aromat_sold_list_admin.html', {"admin_name": admin_name, "aromat_sold_list": aromat_sold_list})
 
 def logout_view(request):
     logout(request)
