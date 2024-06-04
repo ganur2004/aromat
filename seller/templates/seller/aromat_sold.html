@@ -6,6 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Проданные ароматы</title>
+    <link type="image/x-icon" href="{% static 'image/logo.ico' %}" rel="shortcut icon">
+    <link type="Image/x-icon" href="{% static 'image/logo.ico' %}" rel="icon">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static "seller/aromat_sold.css" %}">
     <link rel="stylesheet" href="{% static "report/menu.css" %}">
@@ -16,7 +18,7 @@
     <nav class="col-sm-12 col-md-12 col-lg-12">
         <div  class="wrapper col-sm-12 col-md-12 col-lg-12" id="wrapper">
             <div class="logo-div">
-                <div class="logo"><a href="#" title="Главная"></a></div>
+                <div class="logo"><a href="{% url 'aromat_sold_list' %}" title="Главная"></a></div>
                 <div class="welcome-text">
                     <span style="font-weight: bold;">Продавец: </span>
                     <span style="font-weight: normal;">{{ seller_name }}</span>
@@ -28,7 +30,7 @@
             <label for="close-btn" class="btn close-btn"><i class="fas fa-times"></i></label>
             <li><a href="{% url 'aromat_sold_list' %}">Главная</a></li>
             <li><a class="active-nav-links" href="{% url 'aromat_sold' %}">Продано</a></li>
-            <li><a id="logout" href="{% url 'seller_logout' %}"><img src="{% static "image/Logout.png" %}" alt="logout" width="auto" height="40px"></a></li>
+            <li><a href="{% url 'seller_logout' %}" class="fas fa-door-open"></a></li>
           </ul>
           <label for="menu-btn" class="btn menu-btn"><i class="fas fa-bars"></i></label>
         </div>
@@ -128,7 +130,7 @@
 
     <script>
         function confirmSubmit() {
-            if (confirm("Вы уверены, что хотите продать этот товар?")) {
+            if (confirm("Вы уверены, что ввели правильные данные?")) {
                 document.getElementById("myForm").submit();
             } else {
                 event.preventDefault();

@@ -14,14 +14,15 @@ class SellerLoginForm(forms.Form):
     )
     password = forms.CharField(
         max_length=10,
-        widget=forms.PasswordInput(attrs={'placeholder': 'Пароль...', 'id': 'password', 'pattern': '(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}'}))
+        widget=forms.PasswordInput(attrs={'placeholder': 'Пароль...', 'id': 'password', 'pattern': '(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}'}),
+        label="Пароль"
+    )
     
 
 class AromatSoldForm(forms.ModelForm):
     PAYMENT_CHOICES = [
         ('Наличные', 'Наличные'),
         ('Карта', 'Карта'),
-        # Добавьте другие типы оплат здесь
     ]
 
     code = forms.ChoiceField(choices=[], label='Код', widget=forms.Select(attrs={'id': 'id_code'}))

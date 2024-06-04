@@ -5,17 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Главная</title>
+    <link type="image/x-icon" href="{% static 'image/logo.ico' %}" rel="shortcut icon">
+    <link type="Image/x-icon" href="{% static 'image/logo.ico' %}" rel="icon">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static "report/seller_report.css" %}">
     <link rel="stylesheet" href="{% static "report/menu.css" %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
 </head>
 <body>
     <nav class="col-sm-12 col-md-12 col-lg-12">
         <div  class="wrapper col-sm-12 col-md-12 col-lg-12" id="wrapper">
             <div class="logo-div">
-                <div class="logo"><a href="#" title="Главная"></a></div>
+                <div class="logo"><a href="{% url 'aromat_sold_list_admin' %}" title="Главная"></a></div>
                 <div class="welcome-text">
                     <span style="font-weight: bold;">Администратор: </span>
                     <span style="font-weight: normal;">{{ admin_name }}</span>
@@ -30,7 +31,7 @@
             <li><a href="{% url 'seller_report' %}">Отчеты</a></li>
             <li><a href="{% url 'aromat_add' %}">Добавить</a></li>
             <li><a href="{% url 'seller_register' %}">Продавец</a></li>
-            <li><a id="logout" href="{% url 'logout' %}"><img src="{% static "image/Logout.png" %}" alt="logout" width="auto" height="40px"></a></li>
+            <li><a href="{% url 'logout' %}" class="fas fa-door-open"></a></li>
           </ul>
           <label for="menu-btn" class="btn menu-btn"><i class="fas fa-bars"></i></label>
         </div>
@@ -38,7 +39,7 @@
     <div class="body col-sm-12 col-md-12 col-lg-12">
         <div class="filter-div col-sm-12 col-md-12 col-lg-12">
             <div class="filter">
-                <form method="get" action="{% url 'aromat_list' %}">
+                <form method="get" action="{% url 'aromat_sold_list_admin' %}">
                     <div class="filter-input">
                         <label for="code">Код</label>
                         <select name="code" id="code">
@@ -52,18 +53,13 @@
                         <label for="paymenttype">Тип оплаты</label>
                         <select name="paymenttype" id="paymenttype">
                             <option value="">Выберите тип</option>
-                            {% for code in codes %}
-                                <option value="{{ code }}">{{ code }}</option>
-                            {% endfor %}
+                            <option value="Наличные">Наличные</option>
+                            <option value="Карта">Карта</option>
                         </select>
                     </div>
                     <div class="filter-input">
                         <label for="date">Дата</label>
-                        <select name="date" id="date">
-                            <option value="">Выберите дату</option>
-                            {% for code in codes %}
-                                <option value="{{ code }}">{{ code }}</option>
-                            {% endfor %}
+                            <input id="date" name="date" type="date" value="{{ selected_date }}">
                         </select>
                     </div>
                     <div class="filter-input-button">
@@ -72,8 +68,8 @@
                 </form>
             </div>
             <div class="all-sum col-sm-12 col-md-6 col-lg-6">
-                <div>Дата: </div>
-                <div>Общая сумма: </div>
+                <div style="font-weight: bold;">Дата: {{ selected_date }}</div>
+                <div style="font-size: 26px; font-weight: bold;">Общая сумма: {{ total_price }} тг</div>
 
             </div>
         </div>
@@ -91,7 +87,7 @@
                         <th>Имя продавца</th>
                     </thead>
                     <tbody>
-                        {% for aromat_sold in aromat_sold_list %}
+                        {% for aromat_sold in aromat_sold_objects %}
                             <tr>
                                 <td>{{ aromat_sold.code }}</td>
                                 <td>{{ aromat_sold.name }}</td>

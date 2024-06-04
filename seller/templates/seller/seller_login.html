@@ -5,7 +5,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Логин</title>
+    <title>Логин продавца</title>
+    <link type="image/x-icon" href="{% static 'image/logo.ico' %}" rel="shortcut icon">
+    <link type="Image/x-icon" href="{% static 'image/logo.ico' %}" rel="icon">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'report/admin_login.css' %}">
 </head>
@@ -16,7 +18,6 @@
                 <span>Добро пожаловать</span>
             </div>
         </div>
-
         <div class="main col-sm-12 col-md-12 col-lg-12">
             <h2 class="title">Логин</h2>
             <div class="input-form col-sm-12 col-md-9 col-lg-6">
@@ -53,7 +54,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-
     <script>
         document.getElementById('phone').addEventListener('input', function (e) {
             var x = e.target.value.replace(/\D/g, '');
@@ -84,27 +84,5 @@
             this.textContent = type === 'password' ? '👁️' : '🙈';
         });
     </script>
-
-
-
-    {% comment %} {% if messages %}
-        <ul>
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-    <form method="post">
-        {% csrf_token %}
-        <div>
-            {{ form.phone_number.label_tag }}<br>
-            {{ form.phone_number }}
-        </div>
-        <div>
-            {{ form.password.label_tag }}<br>
-            {{ form.password }}
-        </div>
-        <button type="submit">Login</button>
-    </form> {% endcomment %}
 </body>
 </html>

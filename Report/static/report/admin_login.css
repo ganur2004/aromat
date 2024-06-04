@@ -9,7 +9,6 @@ body {
 
 .menu {
     height: fit-content;
-    /* width: 100%; */
     border-bottom: 2px solid black;
     box-shadow: 0px 0px 0px 0px;
     display: flex;
@@ -41,7 +40,6 @@ body {
     padding: 0px 20px 0px 20px;
     display: flex;
     justify-content: center;
-    /* align-items: center; */
     width: fit-content;
     height: 40px;
     border-radius: 10px;
@@ -57,7 +55,6 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* width: 100%; */
     height: fit-content;
 }
 
@@ -69,7 +66,6 @@ body {
 .input-form {
     display: flex;
     flex-direction: column;
-    /* width: 30vw; */
     height: fit-content;
     border: 1px solid black;
     padding: 15px 20px 25px 20px;
@@ -150,8 +146,4 @@ body {
     .button {
         width: 90%;
     }
-}
-
-@media (min-width: 577px) and (max-width: 768px) {
-    /* Стили для sm */
 }

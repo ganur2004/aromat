@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Отчеты</title>
+    <title>Отчет продавца</title>
     <link type="image/x-icon" href="{% static 'image/logo.ico' %}" rel="shortcut icon">
     <link type="Image/x-icon" href="{% static 'image/logo.ico' %}" rel="icon">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{% static "report/seller_report.css" %}">
+    <link rel="stylesheet" href="{% static "report/seller_report_page.css" %}">
     <link rel="stylesheet" href="{% static "report/menu.css" %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
@@ -31,60 +31,31 @@
             <li><a class="active-nav-links" href="{% url 'seller_report' %}">Отчеты</a></li>
             <li><a href="{% url 'aromat_add' %}">Добавить</a></li>
             <li><a href="{% url 'seller_register' %}">Продавец</a></li>
-            <li><a href="{% url 'logout' %}" class="fas fa-door-open"></a></li>
+            <li><a id="logout" href="{% url 'logout' %}"><img src="{% static "image/Logout.png" %}" alt="logout" width="auto" height="40px"></a></li>
           </ul>
           <label for="menu-btn" class="btn menu-btn"><i class="fas fa-bars"></i></label>
         </div>
     </nav>
     <div class="body col-sm-12 col-md-12 col-lg-12">
-        <div class="filter-div col-sm-12 col-md-12 col-lg-12">
-            <div class="filter">
-                <form method="get" action="{% url 'seller_report' %}">
-                    <div class="filter-input">
-                        <label for="date">Дата</label>
-                        <input name="date" type="date" value="{{ selected_date }}">
-                    </div>
-                    <div class="filter-input">
-                        <label for="date_range">Выберите период:</label>
-                        <select name="date_range" id="date_range">
-                            {% for value, display in date_range_options %}
-                                <option value="{{ value }}" {% if selected_date_range == value %}selected{% endif %}>{{ display }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="filter-input-button">
-                        <button id="button" class="fas fa-filter" type="submit"></button>
-                    </div>
-                </form>
-            </div>
-            <div class="all-sum col-sm-12 col-md-6 col-lg-6">
-                <div style="font-weight: bold;">Дата: {{ selected_date }}</div>
-                <div style="font-size: 26px; font-weight: bold;">Общая сумма: {{ total_all_price }} тг</div>
-
+        <div class="seller-info-div col-sm-12 col-md-12 col-lg-12">
+            <div class="seller-info">
+                <div id="seller-user"><b>Отчет по продавцу:</b> {{ seller_name }}</div>
+                <div><b>Телефон номер:</b> {{ seller_phone }}</div>
+                <div style="font-size: 26px; font-weight: bold;">Общая сумма: {{ total_price }} тг</div>
             </div>
         </div>
         <div class="main col-sm-12 col-md-12 col-lg-12">
-            <div class="result-table col-sm-12 col-md-12 col-lg-10">
+            <div class="result-table col-sm-12 col-md-9 col-lg-6">
                 <table class="styled-table">
                     <thead>
-                        <th>Код</th>
-                        <th>Имя</th>
-                        <th>Фамилия</th>
-                        <th>Номер</th>
+                        <th>Дата</th>
                         <th>Касса</th>
-                        <th>Отчет</th>
                     </thead>
                     <tbody>
-                        {% for seller_price in seller_prices %}
+                        {% for sale in sales_by_date %}
                             <tr>
-                                <td>{{ seller_price.seller.id }}</td>
-                                <td>{{ seller_price.seller.firstname }}</td>
-                                <td>{{ seller_price.seller.lastname }}</td>
-                                <td>{{ seller_price.seller.phone_number }}</td>
-                                <td>{{ seller_price.total_price }}</td> <!-- Вывод суммы кассы для текущего продавца -->
-                                <td id="action">
-                                    <a href="{% url 'seller_report_page' seller_price.seller.id %}"><button type="button" title="Отчет" id="button" class="fas fa-file"></button></a>
-                                </td>
+                                <td>{{ sale.date_only | date:"Y-m-d" }}</td>
+                                <td>{{ sale.total_price }} тг</td>
                             </tr>
                         {% endfor %}
                     </tbody>

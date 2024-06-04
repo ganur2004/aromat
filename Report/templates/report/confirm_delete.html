@@ -6,17 +6,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Удалить аромат</title>
+    <link type="image/x-icon" href="{% static 'image/logo.ico' %}" rel="shortcut icon">
+    <link type="Image/x-icon" href="{% static 'image/logo.ico' %}" rel="icon">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static "report/edit_aromat.css" %}">
     <link rel="stylesheet" href="{% static "report/menu.css" %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
 </head>
 <body>
     <nav class="col-sm-12 col-md-12 col-lg-12">
         <div  class="wrapper col-sm-12 col-md-12 col-lg-12" id="wrapper">
             <div class="logo-div">
-                <div class="logo"><a href="#" title="Главная"></a></div>
+                <div class="logo"><a href="{% url 'aromat_sold_list_admin' %}" title="Главная"></a></div>
                 <div class="welcome-text">
                     <span style="font-weight: bold;">Администратор: </span>
                     <span style="font-weight: normal;">{{ admin_name }}</span>

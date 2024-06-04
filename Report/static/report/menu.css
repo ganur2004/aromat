@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
-*{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -8,14 +8,12 @@
 nav{
   position: fixed;
   z-index: 99;
-  /* width: 100%; */
   border-bottom: 2px solid black;
 }
 nav .wrapper{
   position: relative;
   padding: 10px 10px;
   height: fit-content;
-  /* line-height: 70px; */
   margin: auto;
   display: flex;
   align-items: center;
@@ -36,7 +34,7 @@ nav .wrapper{
   position: relative;
   top: 0;
   left: 0;
-  text-decoration: none; /* убираем подчеркивание ссылки */
+  text-decoration: none; 
 }
 .wrapper .nav-links{
   display: flex;
@@ -167,7 +165,7 @@ border: 1px solid black;
     box-shadow: 0px 15px 15px rgba(0,0,0,0.18);
     transition: all 0.3s ease;
   }
-  /* custom scroll bar */
+
   ::-webkit-scrollbar {
     width: 10px;
   }
@@ -303,10 +301,6 @@ nav input{
 }
 
 #logout {
-    border: none;
-}
-
-#logout:hover, #logout:active {
-    border-color: 1px solid black;
-    color: white;
+  border: none;
+  width: fit-content;
 }
