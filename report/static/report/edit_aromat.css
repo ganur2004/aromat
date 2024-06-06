@@ -1,0 +1,72 @@
+body {
+    font-family: 'Courier New', Courier, monospace;
+    
+}
+
+.body {
+    width: 100vw;
+    height: fit-content;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: fit-content;
+}
+
+.title {
+    margin-top: 50px;
+    font-size: 30px;
+} 
+
+.input-form {
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    border: 1px solid black;
+    padding: 15px 20px 25px 20px;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.input-form form {
+    display: flex;
+    flex-direction: column;
+    margin: 20px 0px 20px 0px;
+}
+.input-form label {
+    margin-bottom: 10px;
+    font-size: 20px;
+}
+.input-form input[type="text"],
+.input-form input[type="number"],
+.input-form input[type="email"],
+.input-form input[type="password"],
+.input-form textarea,
+.input-form select {
+    height: 30px;
+    border-radius: 5px;
+    width: 100%;
+}
+.input-form button {
+    padding: 10px;
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 10px;
+    background-color: black;
+    color: white;
+    border-color: black;
+    cursor: pointer;
+}
+
+.input-form a {
+    display: inline-block;
+    margin-top: 15px;
+    text-decoration: none;
+    color: #007bff;
+    font-size: 16px;
+}
+.input-form a:hover {
+    text-decoration: underline;
+}
