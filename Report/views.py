@@ -436,6 +436,8 @@ def purchases_by_branch(request, branch_id=None):
             branch_id = branch.id
     return branch, branch_id
 
+def welcome(request):
+    return render(request, 'report/welcome.html')
 
 def logout_view(request):
     logout(request)

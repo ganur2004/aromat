@@ -265,7 +265,9 @@ border: 1px solid black;
   .content .row header{
     font-size: 19px;
   }
+
 }
+
 nav input{
   display: none;
 }
@@ -303,4 +305,9 @@ nav input{
 #logout {
   border: none;
   width: fit-content;
+}
+
+.logo-fon img {
+  width: 100%;
+  height: auto;
 }
