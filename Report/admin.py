@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib import admin
 from django.contrib.auth.hashers import make_password
-from .models import Administrator, Aromat, Seller, SoldAromat
+from .models import Administrator, Aromat, Seller, SoldAromat, Branch
 
 
 # Administrator
@@ -45,15 +45,15 @@ class AdministratorAdmin(admin.ModelAdmin):
 
 # Aromat
 class AromatAdmin(admin.ModelAdmin):
-    list_display = ('code', 'name', 'volume')
-    search_fields = ('code', 'name')
+    list_display = ('code', 'name', 'volume', 'branch')
+    search_fields = ('code', 'name', 'branch')
 
 
 # Seller
 class SellerCreationForm(forms.ModelForm):
     class Meta:
         model = Seller
-        fields = ['firstname', 'lastname', 'phone_number', 'password']
+        fields = ['firstname', 'lastname', 'phone_number', 'password', 'branch']
 
     def save(self, commit=True):
         seller = super().save(commit=False)
@@ -65,7 +65,7 @@ class SellerCreationForm(forms.ModelForm):
 class SellerChangeForm(forms.ModelForm):
     class Meta:
         model = Seller
-        fields = ['firstname', 'lastname', 'phone_number', 'password']
+        fields = ['firstname', 'lastname', 'phone_number', 'password', 'branch']
 
     def save(self, commit=True):
         seller = super().save(commit=False)
@@ -79,8 +79,8 @@ class SellerAdmin(admin.ModelAdmin):
     form = SellerChangeForm
     add_form = SellerCreationForm
 
-    list_display = ('firstname', 'lastname', 'phone_number')
-    search_fields = ('firstname', 'lastname', 'phone_number')
+    list_display = ('firstname', 'lastname', 'phone_number', 'branch')
+    search_fields = ('firstname', 'lastname', 'phone_number', 'branch')
 
     def get_form(self, request, obj=None, **kwargs):
         if obj is None:
@@ -88,10 +88,11 @@ class SellerAdmin(admin.ModelAdmin):
         return super().get_form(request, obj, **kwargs)
     
 class SoldAromatAdmin(admin.ModelAdmin):
-    list_display = ('sellername', 'code', 'name', 'date')
-    search_fields = ('sellername', 'code', 'name', 'date')
+    list_display = ('sellername', 'code', 'name', 'date', 'branch')
+    search_fields = ('sellername', 'code', 'name', 'date', 'branch')
 
 admin.site.register(Administrator, AdministratorAdmin)
 admin.site.register(Aromat, AromatAdmin)
 admin.site.register(Seller, SellerAdmin)
 admin.site.register(SoldAromat, SoldAromatAdmin)
+admin.site.register(Branch)

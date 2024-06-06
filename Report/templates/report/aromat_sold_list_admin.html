@@ -37,9 +37,18 @@
         </div>
     </nav>
     <div class="body col-sm-12 col-md-12 col-lg-12">
+        <div class="branch-div col-sm-12 col-md-12 col-lg-12">
+            {% for branch in branches %}
+                <a href="{% url 'aromat_sold_list_admin_by_branch' branch.id %}" class="{% if branch.id == branch_id %} active-branch {% endif %}">  
+                    <div class="branch-div-elements">
+                        {{ branch.cityname }}
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
         <div class="filter-div col-sm-12 col-md-12 col-lg-12">
             <div class="filter">
-                <form method="get" action="{% url 'aromat_sold_list_admin' %}">
+                <form method="get" action="{% url 'aromat_sold_list_admin_by_branch' branch_id=branch_id %}">
                     <div class="filter-input">
                         <label for="code">Код</label>
                         <select name="code" id="code">

@@ -20,38 +20,30 @@
     <nav class="col-sm-12 col-md-12 col-lg-12">
         <div  class="wrapper col-sm-12 col-md-12 col-lg-12" id="wrapper">
             <div class="logo-div">
-                <div class="logo"><a href="{% url 'aromat_sold_list_admin' %}" title="Главная"></a></div>
+                <div class="logo"><a href="{% url 'aromat_sold_list' %}" title="Главная"></a></div>
                 <div class="welcome-text">
-                    <span style="font-weight: bold;">Администратор: </span>
-                    <span style="font-weight: normal;">{{ admin_name }}</span>
+                    <span style="font-weight: bold;">Продавец: </span>
+                    <span style="font-weight: normal;">{{ seller_name }}</span>
                 </div>
             </div>
           <input type="radio" name="slider" id="menu-btn">
           <input type="radio" name="slider" id="close-btn">
           <ul class="nav-links">
             <label for="close-btn" class="btn close-btn"><i class="fas fa-times"></i></label>
-            <li><a href="{% url 'aromat_sold_list_admin' %}">Главная</a></li>
-            <li><a class="active-nav-links" href="{% url 'aromat_list' %}">Ароматы</a></li>
-            <li><a href="{% url 'seller_report' %}">Отчеты</a></li>
-            <li><a href="{% url 'aromat_add' %}">Добавить</a></li>
-            <li><a href="{% url 'seller_register' %}">Продавец</a></li>
-            <li><a href="{% url 'logout' %}" class="fas fa-door-open"></a></li>
+            <li><a href="{% url 'aromat_sold_list' %}">Главная</a></li>
+            <li><a class="active-nav-links" href="{% url 'aromat_list_seller' %}">Ароматы</a></li>
+            <li><a href="{% url 'aromat_sold' %}">Продано</a></li>
+            <li><a href="{% url 'seller_logout' %}" class="fas fa-door-open"></a></li>
           </ul>
           <label for="menu-btn" class="btn menu-btn"><i class="fas fa-bars"></i></label>
         </div>
     </nav>
     <div class="body col-sm-12 col-md-12 col-lg-12">
         <div class="branch-div col-sm-12 col-md-12 col-lg-12">
-            {% for branch in branches %}
-                <a href="{% url 'aromat_list_by_branch' branch.id %}" class="{% if branch.id == branch_id %} active-branch {% endif %}">  
-                    <div class="branch-div-elements">
-                        {{ branch.cityname }}
-                    </div>
-                </a>
-            {% endfor %}
+            <div class="branch-div-elements"><b>Ваш филиал: </b>{{ branchname }}</div>
         </div>
         <div class="filter">
-            <form method="get" action="{% url 'aromat_list_by_branch' branch_id=branch_id %}">
+            <form method="get" action="{% url 'aromat_list_seller' %}">
                 <div class="filter-input">
                     <label for="code">Код</label>
                     <select name="code" id="code">
@@ -83,7 +75,6 @@
                         <th>Код</th>
                         <th>Название аромата</th>
                         <th>Обьем</th>
-                        <th></th>
                     </thead>
                     <tbody>
                         {% for aromat in aromat_objects %}
@@ -91,11 +82,6 @@
                                 <td>{{ aromat.code }}</td>
                                 <td>{{ aromat.name }}</td>
                                 <td>{{ aromat.volume }}</td>
-                                <td id="action">
-                                    <a href="{% url 'edit_aromat' aromat.id %}"><button type="button" title="Редактировать" id="button" class="fas fa-pen"></button></a>
-                                    <a href="{% url 'delete_aromat' aromat.id %}" onclick="return confirm('Вы уверены, что хотите удалить этот аромат?');"><button type="button" title="Удалить" id="button" class="fas fa-trash"></button></a>
-                                </td>
-                            </tr>
                         {% endfor %}
                     </tbody>
                 </table>

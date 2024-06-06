@@ -5,6 +5,7 @@ body {
 .body {
     width: 100vw;
     height: fit-content;
+    margin-bottom: 20px;
 }
 
 .menu {
@@ -139,6 +140,36 @@ body {
 #password-text {
     font-size: 12px;
 
+}
+
+.branch-div {
+    display: flex;
+    flex-direction: row;
+    padding: 15px 15px;
+}
+
+.branch-div a {
+    color: black;
+    text-decoration: none;
+}
+
+.branch-div-elements {
+    height: fit-content;
+    width: fit-content;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 10px 15px;
+    margin-left: 20px;
+}
+
+.branch-div-elements:hover, .branch-div-elements:active {
+    background-color: black;
+    color: white;
+}
+
+.active-branch div {
+    background-color: black;
+    color: white;
 }
 
 @media (max-width: 768px) {

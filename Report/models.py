@@ -32,11 +32,21 @@ class Administrator(models.Model):
         verbose_name = 'Администратор'
         verbose_name_plural = 'Администраторы'
     
+class Branch(models.Model):
+    cityname = models.CharField(max_length=100, verbose_name="Название города")
+
+    class Meta:
+        verbose_name = 'Филиал'
+        verbose_name_plural = 'Филиалы'
+
+    def __str__(self):
+        return self.cityname
 
 class Aromat(models.Model):
-    code = models.CharField(max_length=3, unique=True, verbose_name='Код')
-    name = models.CharField(max_length=255, unique=True, verbose_name='Название')
+    code = models.CharField(max_length=3, verbose_name='Код')
+    name = models.CharField(max_length=255, verbose_name='Название')
     volume = models.DecimalField(max_digits=6, decimal_places=2, verbose_name='Объем')
+    branch = models.ForeignKey(Branch, on_delete=models.CASCADE, verbose_name='Филиал')
 
     def __str__(self):
         return self.name
@@ -57,7 +67,8 @@ class Seller(models.Model):
         )],
         verbose_name='Телефон'
     )
-    password = models.CharField(max_length=20, verbose_name='Пароль')
+    branch = models.ForeignKey(Branch, on_delete=models.CASCADE, verbose_name='Филиал')
+    password = models.CharField(max_length=25, verbose_name='Пароль')
 
     def set_password(self, raw_password):
         self.password = make_password(raw_password)
@@ -79,6 +90,7 @@ class SoldAromat(models.Model):
     price = models.DecimalField(max_digits=6, decimal_places=2, verbose_name='Касса', default=0)
     date = models.DateTimeField(verbose_name='Дата')
     sellername = models.CharField(max_length=100, verbose_name='Имя продавца')
+    branch = models.ForeignKey(Branch, on_delete=models.CASCADE, verbose_name='Филиал')
 
     class Meta:
         verbose_name = 'Проданные ароматы'
@@ -86,3 +98,4 @@ class SoldAromat(models.Model):
 
     def __str__(self):
         return f"{self.code} - {self.sellername} - {self.date}"
+    

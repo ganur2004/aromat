@@ -29,9 +29,12 @@ class AromatSoldForm(forms.ModelForm):
     name = forms.ChoiceField(choices=[], label='Название аромата', widget=forms.Select(attrs={'id': 'id_name'}))
 
     def __init__(self, *args, **kwargs):
+        branch = kwargs.pop('branch', None)  # Извлекаем филиал из kwargs
         super(AromatSoldForm, self).__init__(*args, **kwargs)
-        self.fields['code'].choices = [(aromat.code, aromat.code) for aromat in Aromat.objects.all()]
-        self.fields['name'].choices = [(aromat.name, aromat.name) for aromat in Aromat.objects.all()]
+        if branch:  # Если филиал передан, фильтруем коды и названия ароматов по этому филиалу
+            aromats = Aromat.objects.filter(branch=branch)
+            self.fields['code'].choices = [(aromat.code, aromat.code) for aromat in aromats]
+            self.fields['name'].choices = [(aromat.name, aromat.name) for aromat in aromats]
 
     size = forms.DecimalField(
         widget=forms.NumberInput(attrs={'placeholder': 'Масла...', 'id': 'size', 'min': 0}),

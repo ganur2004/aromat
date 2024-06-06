@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .forms import AdminLoginForm, AromatAddForm, SellerRegisterForm, FilterForm, AromatForm
-from .models import Administrator, Aromat, Seller, SoldAromat
+from .models import Administrator, Aromat, Seller, SoldAromat, Branch
 from django.contrib.auth import logout
 from django.contrib.auth.hashers import make_password
 from django.http import JsonResponse
@@ -50,12 +50,26 @@ def admin_session(request):
     return admin_name
 
 
-def aromat_add(request):
+def aromat_add(request, branch_id=None):
     message = None
     admin_name = admin_session(request)
     admin_id = request.session.get('admin_id')
 
     if admin_id:
+        branch_list = Branch.objects.all()
+        selected_branch_id = request.session.get('selected_branch_id')
+
+        if branch_id:
+            branch = get_object_or_404(Branch, id=branch_id)
+            request.session['selected_branch_id'] = branch_id
+        elif selected_branch_id:
+            branch = get_object_or_404(Branch, id=selected_branch_id)
+            branch_id = selected_branch_id
+        else:
+            branch = Branch.objects.first()
+            if branch:
+                branch_id = branch.id
+
         if request.method == 'POST':
             form = AromatAddForm(request.POST)
             if form.is_valid():
@@ -63,24 +77,26 @@ def aromat_add(request):
                 aromatname = form.cleaned_data['aromatname']
                 size = form.cleaned_data['size']
                 
-                if Aromat.objects.filter(code=code).exists():
-                    message = 'Аромат с таким кодом уже существует.'
-                elif Aromat.objects.filter(name=aromatname).exists():
-                    message = 'Аромат с таким названием уже существует.'
+                if Aromat.objects.filter(code=code, branch=branch).exists():
+                    message = 'Аромат с таким кодом уже существует в этом филиале.'
+                elif Aromat.objects.filter(name=aromatname, branch=branch).exists():
+                    message = 'Аромат с таким названием уже существует в этом филиале.'
                 elif size <= 0:
-                    message = 'Объем должен быть положительными числами.'
+                    message = 'Объем должен быть положительным числом.'
                 else:
-                    new_aromat = Aromat(code=code, name=aromatname, volume=size)
+                    new_aromat = Aromat(code=code, name=aromatname, volume=size, branch=branch)
                     new_aromat.save()
                     message = 'Аромат успешно добавлен.'
         else:
             form = AromatAddForm()
         
-        return render(request, 'report/aromat_add.html', {'form': form, 'message': message, 'admin_name': admin_name})
+        return render(request, 'report/aromat_add.html', {
+            'form': form, 'message': message, 'admin_name': admin_name, 'branch_id': branch_id, 'branches': branch_list})
     else:
         return redirect('admin_login')
 
-def aromat_list(request):
+
+def aromat_list(request, branch_id=None):
     admin_name = admin_session(request)
     admin_id = request.session.get('admin_id')
     
@@ -88,19 +104,37 @@ def aromat_list(request):
         code = request.GET.get('code')
         aromatname = request.GET.get('aromatname')
         aromat_objects = Aromat.objects.all()
-        
+        branch_list = Branch.objects.all()
+
+        selected_branch_id = request.session.get('selected_branch_id')
+
+        if branch_id:
+            branch = get_object_or_404(Branch, id=branch_id)
+            request.session['selected_branch_id'] = branch_id
+        elif selected_branch_id:
+            branch = get_object_or_404(Branch, id=selected_branch_id)
+            branch_id = selected_branch_id
+        else:
+            branch = Branch.objects.first()
+            if branch:
+                branch_id = branch.id
+
+        if branch:
+            aromat_objects = aromat_objects.filter(branch=branch)
         if code:
             aromat_objects = aromat_objects.filter(code=code)
         if aromatname:
             aromat_objects = aromat_objects.filter(name__icontains=aromatname)
 
-        codes = Aromat.objects.values_list('code', flat=True).distinct()
-        names = Aromat.objects.values_list('name', flat=True).distinct()
+        codes = aromat_objects.values_list('code', flat=True).distinct()
+        names = aromat_objects.values_list('name', flat=True).distinct()
         context = {
             'admin_name': admin_name,
             'aromat_objects': aromat_objects,
             'codes': codes,
-            'names': names
+            'names': names,
+            'branches': branch_list,
+            'branch_id': branch_id
         }
 
         aromat_objects = Aromat.objects.all()
@@ -110,12 +144,26 @@ def aromat_list(request):
         return redirect('admin_login')
 
 
-def seller_register(request):
+def seller_register(request, branch_id=None):
     message = None
     admin_name = admin_session(request)
     admin_id = request.session.get('admin_id')
 
     if admin_id:
+        branch_list = Branch.objects.all()
+        selected_branch_id = request.session.get('selected_branch_id')
+
+        if branch_id:
+            branch = get_object_or_404(Branch, id=branch_id)
+            request.session['selected_branch_id'] = branch_id
+        elif selected_branch_id:
+            branch = get_object_or_404(Branch, id=selected_branch_id)
+            branch_id = selected_branch_id
+        else:
+            branch = Branch.objects.first()
+            if branch:
+                branch_id = branch.id
+
         if request.method == 'POST':
             form = SellerRegisterForm(request.POST)
             if form.is_valid():
@@ -128,17 +176,17 @@ def seller_register(request):
                     messages.error(request, 'Продавец с таким номером телефона уже существует.')
                 else:
                     hashed_password = make_password(password)
-                    new_seller = Seller(lastname=lastname, firstname=firstname, phone_number=phone_number, password=hashed_password)
+                    new_seller = Seller(lastname=lastname, firstname=firstname, phone_number=phone_number, password=hashed_password, branch=branch)
                     new_seller.save()
                     messages.success(request, 'Продавец успешно добавлен.')
         else:
             form = SellerRegisterForm()
-        return render(request, 'report/seller_register.html', {'form': form, 'admin_name': admin_name})
+        return render(request, 'report/seller_register.html', {'form': form, 'admin_name': admin_name, 'branches': branch_list, "branch_id": branch_id})
     else:
         return redirect('admin_login')
 
 
-def seller_report(request):
+def seller_report(request, branch_id=None):
     admin_name = admin_session(request)
     admin_id = request.session.get('admin_id')
     
@@ -147,6 +195,20 @@ def seller_report(request):
         
         date = request.GET.get('date') or today
         date_range = request.GET.get('date_range', 'all')
+        branch_list = Branch.objects.all()
+
+        selected_branch_id = request.session.get('selected_branch_id')
+
+        if branch_id:
+            branch = get_object_or_404(Branch, id=branch_id)
+            request.session['selected_branch_id'] = branch_id
+        elif selected_branch_id:
+            branch = get_object_or_404(Branch, id=selected_branch_id)
+            branch_id = selected_branch_id
+        else:
+            branch = Branch.objects.first()
+            if branch:
+                branch_id = branch.id
 
         if date_range == '7_days':
             start_date = dt_date.today() - timedelta(days=7)
@@ -164,36 +226,60 @@ def seller_report(request):
             start_date = None
 
         seller_objects = Seller.objects.all()
+        if branch:
+            seller_objects = seller_objects.filter(branch=branch)
         total_all_price = 0
 
         seller_prices = []
-        for seller in seller_objects:
-            if start_date:
-                total_price = SoldAromat.objects.filter(seller=seller, date__date__range=[start_date, dt_date.today()]).aggregate(total_price=Sum('price'))['total_price']
-            else:
-                total_price = SoldAromat.objects.filter(seller=seller, date__date=date).aggregate(total_price=Sum('price'))['total_price']
-            
-            if total_price is None:
-                total_price = 0
-            total_all_price += total_price
-            seller_prices.append({'seller': seller, 'total_price': total_price or 0})
+        if seller_objects:
+            for seller in seller_objects:
+                if start_date:
+                    total_price = SoldAromat.objects.filter(seller=seller, date__date__range=[start_date, dt_date.today()]).aggregate(total_price=Sum('price'))['total_price']
+                else:
+                    total_price = SoldAromat.objects.filter(seller=seller, date__date=date).aggregate(total_price=Sum('price'))['total_price']
+                
+                if total_price is None:
+                    total_price = 0
+                total_all_price += total_price
+                seller_prices.append({'seller': seller, 'total_price': total_price or 0})
 
+                context = {
+                    "seller_prices": seller_prices,
+                    "admin_name": admin_name,
+                    "selected_date": date,
+                    "selected_date_range": date_range,
+                    "total_all_price": total_all_price,
+                    "date_range_options": [
+                        ('all', 'Все время'),
+                        ('7_days', 'Последние 7 дней'),
+                        ('1_month', 'Последний месяц'),
+                        ('3_months', 'Последние 3 месяца'),
+                        ('6_months', 'Последние 6 месяцев'),
+                        ('9_months', 'Последние 9 месяцев'),
+                        ('1_year', 'Последний год'),
+                    ],
+                    'branches': branch_list,
+                    'branch_id': branch_id
+                }
+        else:
             context = {
-            "seller_prices": seller_prices,
-            "admin_name": admin_name,
-            "selected_date": date,
-            "selected_date_range": date_range,
-            "total_all_price": total_all_price,
-            "date_range_options": [
-                ('all', 'Все время'),
-                ('7_days', 'Последние 7 дней'),
-                ('1_month', 'Последний месяц'),
-                ('3_months', 'Последние 3 месяца'),
-                ('6_months', 'Последние 6 месяцев'),
-                ('9_months', 'Последние 9 месяцев'),
-                ('1_year', 'Последний год'),
-            ]
-        }
+                    "seller_prices": seller_prices,
+                    "admin_name": admin_name,
+                    "selected_date": date,
+                    "selected_date_range": date_range,
+                    "total_all_price": total_all_price,
+                    "date_range_options": [
+                        ('all', 'Все время'),
+                        ('7_days', 'Последние 7 дней'),
+                        ('1_month', 'Последний месяц'),
+                        ('3_months', 'Последние 3 месяца'),
+                        ('6_months', 'Последние 6 месяцев'),
+                        ('9_months', 'Последние 9 месяцев'),
+                        ('1_year', 'Последний год'),
+                    ],
+                    'branches': branch_list,
+                    'branch_id': branch_id
+                }
 
         return render(request, 'report/seller_report.html', context)
     else:
@@ -233,7 +319,7 @@ def delete_aromat(request, pk):
         return redirect('admin_login')
 
 
-def aromat_sold_list_admin(request):
+def aromat_sold_list_admin(request, branch_id=None):
     admin_name = admin_session(request)
     admin_id = request.session.get('admin_id')
     
@@ -244,8 +330,23 @@ def aromat_sold_list_admin(request):
 
         today = dt_date.today().strftime('%Y-%m-%d')
 
+        selected_branch_id = request.session.get('selected_branch_id')
+
+        if branch_id:
+            branch = get_object_or_404(Branch, id=branch_id)
+            request.session['selected_branch_id'] = branch_id
+        elif selected_branch_id:
+            branch = get_object_or_404(Branch, id=selected_branch_id)
+            branch_id = selected_branch_id
+        else:
+            branch = Branch.objects.first()
+            if branch:
+                branch_id = branch.id
+
         aromat_sold_objects = SoldAromat.objects.all()
 
+        if branch:
+            aromat_sold_objects = aromat_sold_objects.filter(branch=branch)
         if code:
             aromat_sold_objects = aromat_sold_objects.filter(code=code)
         if paymenttype:
@@ -254,12 +355,14 @@ def aromat_sold_list_admin(request):
             aromat_sold_objects = aromat_sold_objects.filter(date__date=date)
         else:
             date = today
+            aromat_sold_objects = aromat_sold_objects.filter(date__date=date)
 
         total_price = aromat_sold_objects.aggregate(Sum('price'))['price__sum'] or 0
 
-        codes = SoldAromat.objects.values_list('code', flat=True).distinct()
+        codes = aromat_sold_objects.values_list('code', flat=True).distinct()
         paymenttypes = SoldAromat.objects.values_list('paymenttype', flat=True).distinct()
         dates = SoldAromat.objects.values_list('date', flat=True).distinct()
+        branch = Branch.objects.all()
 
         dates = [d.strftime('%Y-%m-%d') for d in dates]
 
@@ -274,6 +377,8 @@ def aromat_sold_list_admin(request):
             'selected_date': date,
             'total_price': total_price,
             'today': today, 
+            'branches': branch,
+            'branch_id': branch_id
         }
 
         return render(request, 'report/aromat_sold_list_admin.html', context)
@@ -320,6 +425,16 @@ def seller_report_page(request, pk):
         return render(request, 'report/seller_report_page.html', context)
     else:
         return redirect('admin_login')
+    
+
+def purchases_by_branch(request, branch_id=None):
+    if branch_id:
+        branch = get_object_or_404(Branch, id=branch_id)
+    else:
+        branch = Branch.objects.first()
+        if branch:
+            branch_id = branch.id
+    return branch, branch_id
 
 
 def logout_view(request):

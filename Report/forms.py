@@ -18,8 +18,9 @@ class AdminLoginForm(forms.Form):
         label="Пароль")
 
 class AromatAddForm(forms.Form):
-    code = forms.IntegerField(
-        widget=forms.NumberInput(attrs={'placeholder': 'Код...', 'id': 'code', 'min': 100}),
+    code = forms.CharField(
+        max_length=3,
+        widget=forms.TextInput(attrs={'placeholder': 'Код...', 'id': 'code'}),
         label="Код")
     aromatname = forms.CharField(
         max_length=50,
@@ -53,8 +54,9 @@ class SellerRegisterForm(forms.Form):
         label="Пароль")
 
 class FilterForm(forms.Form):
-    code = forms.IntegerField(
-        widget=forms.NumberInput(attrs={'id': 'code', 'min': 100}),
+    code = forms.CharField(
+        max_length=3,
+        widget=forms.TextInput(attrs={'id': 'code'}),
         label="Код")
     aromatname = forms.CharField(
         max_length=50,

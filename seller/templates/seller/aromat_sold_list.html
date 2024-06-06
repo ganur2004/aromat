@@ -27,6 +27,7 @@
           <ul class="nav-links">
             <label for="close-btn" class="btn close-btn"><i class="fas fa-times"></i></label>
             <li><a class="active-nav-links" href="{% url 'aromat_sold_list' %}">Главная</a></li>
+            <li><a href="{% url 'aromat_list_seller' %}">Ароматы</a></li>
             <li><a href="{% url 'aromat_sold' %}">Продано</a></li>
             <li><a href="{% url 'seller_logout' %}" class="fas fa-door-open"></a></li>
           </ul>
@@ -34,6 +35,9 @@
         </div>
     </nav>
     <div class="body col-sm-12 col-md-12 col-lg-12">
+        <div class="branch-div col-sm-12 col-md-12 col-lg-12">
+            <div class="branch-div-elements"><b>Ваш филиал: </b>{{ branchname }}</div>
+        </div>
         <div class="filter-div col-sm-12 col-md-12 col-lg-12">
             <div class="filter">
                 <form method="get" action="{% url 'aromat_sold_list' %}">

@@ -37,9 +37,18 @@
         </div>
     </nav>
     <div class="body col-sm-12 col-md-12 col-lg-12">
+        <div class="branch-div col-sm-12 col-md-12 col-lg-12">
+            {% for branch in branches %}
+                <a href="{% url 'seller_report_by_branch' branch.id %}" class="{% if branch.id == branch_id %} active-branch {% endif %}">  
+                    <div class="branch-div-elements">
+                        {{ branch.cityname }}
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
         <div class="filter-div col-sm-12 col-md-12 col-lg-12">
             <div class="filter">
-                <form method="get" action="{% url 'seller_report' %}">
+                <form method="get" action="{% url 'seller_report_by_branch' branch_id=branch_id %}">
                     <div class="filter-input">
                         <label for="date">Дата</label>
                         <input name="date" type="date" value="{{ selected_date }}">

@@ -38,13 +38,22 @@
         </div>
     </nav>
     <div class="body col-sm-12 col-md-12 col-lg-12">
+        <div class="branch-div col-sm-12 col-md-12 col-lg-12">
+            {% for branch in branches %}
+                <a href="{% url 'aromat_add_by_branch' branch.id %}" class="{% if branch.id == branch_id %} active-branch {% endif %}">  
+                    <div class="branch-div-elements">
+                        {{ branch.cityname }}
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
         <div class="main col-sm-12 col-md-12 col-lg-12">
             <h2 class="title">Добавить аромат</h2>
             <div class="input-form col-sm-12 col-md-9 col-lg-6">
                 {% if message %}
                     <p>{{ message }}</p>
                 {% endif %}
-                <form action="{% url 'aromat_add' %}" method="post">
+                <form action="{% url 'aromat_add_by_branch' branch_id=branch_id %}" method="post">
                     {% csrf_token %}
                     <div class="input-div">
                         {{ form.code.label_tag }}
