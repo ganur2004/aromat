@@ -307,7 +307,7 @@ nav input{
   width: fit-content;
 }
 
-.logo-fon img {
+#logo-fon {
   width: 100% !important;
   height: auto !important;
 }
