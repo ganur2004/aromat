@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-k1xy@b0q9f+xp0kcun7*opvmtscz4*x5=l-nd61so#^=!z9npq
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['89.46.33.243', 'www.heavenperfumes.kz', 'heavenperfumes.kz']
+ALLOWED_HOSTS = ['89.46.33.243', 'www.heavenperfumes.kz', 'heavenperfumes.kz', '127.0.0.1']
 
 
 # Application definition
@@ -129,7 +129,11 @@ STATICFILES_DIRS = [
      BASE_DIR / "report/static",
  ]
 
+<<<<<<< HEAD
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+=======
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+>>>>>>> 9cfd5c38a794884b7074445eb535076c9fe34b75
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
