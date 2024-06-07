@@ -18,6 +18,16 @@ class AdminLoginForm(forms.Form):
         label="Пароль")
 
 class AromatAddForm(forms.Form):
+    CODETYPE_CHOICES = [
+        ('M-', 'M (Man)'),
+        ('W-', 'W (Women)'),
+        ('U-', 'U (Unisex)'),
+    ]
+    codetype = forms.ChoiceField(
+        choices=CODETYPE_CHOICES, 
+        label='Тип кода',
+        widget=forms.Select(attrs={'id': 'id_codetype'})
+    )
     code = forms.CharField(
         max_length=3,
         widget=forms.TextInput(attrs={'placeholder': 'Код...', 'id': 'code'}),

@@ -44,6 +44,11 @@ body {
     border-radius: 5px;
 }
 
+.input-div select {
+    height: 30px;
+    border-radius: 5px;
+}
+
 .button {
     padding: 10px;
     width: 50%;

@@ -75,7 +75,7 @@
             </div>
         </div>
         <div class="main col-sm-12 col-md-12 col-lg-12">
-            <div class="result-table col-sm-12 col-md-12 col-lg-10">
+            <div class="result-table col-sm-12 col-md-12 col-lg-12">
                 <table class="styled-table">
                     <thead>
                         <th>Код</th>
@@ -85,6 +85,7 @@
                         <th>Тип оплаты</th>
                         <th>Касса</th>
                         <th>Дата</th>
+                        <th>Комментарий</th>
                     </thead>
                     <tbody>
                         {% for aromat_sold in aromat_sold_objects %}
@@ -96,6 +97,7 @@
                                 <td>{{ aromat_sold.paymenttype }}</td>
                                 <td>{{ aromat_sold.price }}</td>
                                 <td>{{ aromat_sold.date|date:"Y-m-d | H:i:s" }}</td>
+                                <td>{{ aromat_sold.coment }}</td>
                             </tr>
                         {% endfor %}
                     </tbody>

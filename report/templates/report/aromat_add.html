@@ -56,6 +56,10 @@
                 <form action="{% url 'aromat_add_by_branch' branch_id=branch_id %}" method="post">
                     {% csrf_token %}
                     <div class="input-div">
+                        {{ form.codetype.label_tag }}
+                        {{ form.codetype }}
+                    </div>
+                    <div class="input-div">
                         {{ form.code.label_tag }}
                         {{ form.code }}
                     </div>

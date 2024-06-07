@@ -94,6 +94,7 @@
                         <th>Касса</th>
                         <th>Дата</th>
                         <th>Имя продавца</th>
+                        <th>Комментарий</th>
                     </thead>
                     <tbody>
                         {% for aromat_sold in aromat_sold_objects %}
@@ -106,6 +107,7 @@
                                 <td>{{ aromat_sold.price }}</td>
                                 <td>{{ aromat_sold.date|date:"Y-m-d | H:i:s" }}</td>
                                 <td>{{ aromat_sold.sellername }}</td>
+                                <td>{{ aromat_sold.coment }}</td>
                             </tr>
                         {% endfor %}
                     </tbody>
