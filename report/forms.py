@@ -13,7 +13,7 @@ class AdminLoginForm(forms.Form):
         label="Телефон"
     )
     password = forms.CharField(
-        max_length=10,
+        max_length=50,
         widget=forms.PasswordInput(attrs={'placeholder': 'Пароль...', 'id': 'password', 'pattern': '(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}'}),
         label="Пароль")
 
@@ -49,7 +49,7 @@ class SellerRegisterForm(forms.Form):
         label="Телефон"
     )
     password = forms.CharField(
-        max_length=10,
+        max_length=50,
         widget=forms.PasswordInput(attrs={'placeholder': 'Пароль...', 'id': 'password', 'pattern': '(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}'}),
         label="Пароль")
 
