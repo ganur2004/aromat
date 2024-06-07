@@ -13,7 +13,7 @@ class SellerLoginForm(forms.Form):
         label="Телефон"
     )
     password = forms.CharField(
-        max_length=10,
+        max_length=50,
         widget=forms.PasswordInput(attrs={'placeholder': 'Пароль...', 'id': 'password', 'pattern': '(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}'}),
         label="Пароль"
     )
@@ -50,6 +50,13 @@ class AromatSoldForm(forms.ModelForm):
         choices=PAYMENT_CHOICES, 
         label='Тип оплаты',
         widget=forms.Select(attrs={'id': 'id_paymenttype'})
+    )
+
+    coment = forms.CharField(
+        label='Комментарий',
+        max_length=5000,
+        required=False,
+        widget=forms.Textarea(attrs={'placeholder': 'Комментарий...', 'id': 'id_coment', 'rows': '5'}),
     )
 
     date = forms.DateField(label='Дата', required=False, widget=forms.DateInput(attrs={'readonly': 'readonly'}))

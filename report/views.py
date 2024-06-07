@@ -73,14 +73,17 @@ def aromat_add(request, branch_id=None):
         if request.method == 'POST':
             form = AromatAddForm(request.POST)
             if form.is_valid():
+                codetype = form.cleaned_data['codetype']
                 code = form.cleaned_data['code']
                 aromatname = form.cleaned_data['aromatname']
                 size = form.cleaned_data['size']
+
+                code = codetype + code
                 
                 if Aromat.objects.filter(code=code, branch=branch).exists():
                     message = 'Аромат с таким кодом уже существует в этом филиале.'
-                elif Aromat.objects.filter(name=aromatname, branch=branch).exists():
-                    message = 'Аромат с таким названием уже существует в этом филиале.'
+                # elif Aromat.objects.filter(name=aromatname, branch=branch).exists():
+                #     message = 'Аромат с таким названием уже существует в этом филиале.'
                 elif size <= 0:
                     message = 'Объем должен быть положительным числом.'
                 else:

@@ -6,6 +6,7 @@ from django.contrib.auth import logout
 from django.utils import timezone
 from datetime import date as dt_date
 from django.db.models import Sum
+from decimal import Decimal, InvalidOperation
 
 # Create your views here.
 
@@ -66,12 +67,19 @@ def aromat_sold(request):
                 paymenttype = form.cleaned_data['paymenttype']
                 price = form.cleaned_data['cost']
                 date = timezone.now()
+                coment = form.cleaned_data['coment'] or ""
                 sellername = seller_name
+
+                try:
+                    size = Decimal(size)
+                    price = Decimal(price)
+                except InvalidOperation:
+                    message = "Некорректное значение для размера или стоимости"
 
                 if aromat.volume >= size:
                     volume = aromat.volume - size
                     aromat.volume = volume
-                    new_sold_aromat = SoldAromat.objects.create(seller_id=seller_id, code=code, name=name, volume=volume, masla=size, paymenttype=paymenttype, price=price, date=date, sellername=sellername, branch=branchname)
+                    new_sold_aromat = SoldAromat.objects.create(seller_id=seller_id, code=code, name=name, volume=volume, masla=size, paymenttype=paymenttype, price=price, date=date, sellername=sellername, branch=branchname, coment=coment)
                     message = 'Продажа успешно сохранена!'
                     aromat.save()
                 else:

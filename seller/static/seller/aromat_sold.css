@@ -103,8 +103,12 @@ body {
     font-size: 20px;
 }
 
-.input-div input, .input-div select {
+.input-div input, .input-div select  {
     height: 30px;
+    border-radius: 5px;
+}
+
+.input-div textarea {
     border-radius: 5px;
 }
 

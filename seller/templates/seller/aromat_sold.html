@@ -84,6 +84,13 @@
                         {% endif %}
                     </div>
                     <div class="input-div">
+                        {{ form.coment.label_tag }}
+                        {{ form.coment }}
+                        {% if form.coment.errors %}
+                            <div class="error">{{ form.coment.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="input-div">
                         <button type="submit" onclick="confirmSubmit()" class="button">Продано</button>
                     </div>
                 </form>
