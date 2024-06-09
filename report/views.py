@@ -107,6 +107,7 @@ def aromat_list(request, branch_id=None):
         code = request.GET.get('code')
         aromatname = request.GET.get('aromatname')
         aromat_objects = Aromat.objects.all()
+        aromat_objects_not_filter = Aromat.objects.all()
         branch_list = Branch.objects.all()
 
         selected_branch_id = request.session.get('selected_branch_id')
@@ -129,8 +130,8 @@ def aromat_list(request, branch_id=None):
         if aromatname:
             aromat_objects = aromat_objects.filter(name__icontains=aromatname)
 
-        codes = aromat_objects.values_list('code', flat=True).distinct()
-        names = aromat_objects.values_list('name', flat=True).distinct()
+        codes = aromat_objects_not_filter.values_list('code', flat=True).distinct()
+        names = aromat_objects_not_filter.values_list('name', flat=True).distinct()
         context = {
             'admin_name': admin_name,
             'aromat_objects': aromat_objects,
@@ -347,6 +348,7 @@ def aromat_sold_list_admin(request, branch_id=None):
                 branch_id = branch.id
 
         aromat_sold_objects = SoldAromat.objects.all()
+        aromat_objects = Aromat.objects.all()
 
         if branch:
             aromat_sold_objects = aromat_sold_objects.filter(branch=branch)
@@ -362,7 +364,7 @@ def aromat_sold_list_admin(request, branch_id=None):
 
         total_price = aromat_sold_objects.aggregate(Sum('price'))['price__sum'] or 0
 
-        codes = aromat_sold_objects.values_list('code', flat=True).distinct()
+        codes = aromat_objects.values_list('code', flat=True).distinct()
         paymenttypes = SoldAromat.objects.values_list('paymenttype', flat=True).distinct()
         dates = SoldAromat.objects.values_list('date', flat=True).distinct()
         branch = Branch.objects.all()

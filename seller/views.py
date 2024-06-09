@@ -126,6 +126,7 @@ def aromat_sold_list(request):
         date = request.GET.get('date')
         today = dt_date.today().strftime('%Y-%m-%d')
         aromat_sold_objects = SoldAromat.objects.filter(seller_id=seller_id)
+        aromat_sold_objects_not_filter = SoldAromat.objects.filter(seller_id=seller_id)
         seller = Seller.objects.get(id=seller_id)
         branchname = seller.branch
 
@@ -140,7 +141,7 @@ def aromat_sold_list(request):
             aromat_sold_objects = aromat_sold_objects.filter(date__date=today)
 
         total_price = aromat_sold_objects.aggregate(Sum('price'))['price__sum'] or 0
-        codes = aromat_sold_objects.values_list('code', flat=True).distinct()
+        codes = aromat_sold_objects_not_filter.values_list('code', flat=True).distinct()
         paymenttypes = SoldAromat.objects.values_list('paymenttype', flat=True).distinct()
         dates = SoldAromat.objects.values_list('date', flat=True).distinct()
         dates = [d.strftime('%Y-%m-%d') for d in dates]

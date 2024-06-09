@@ -101,43 +101,60 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const codeField = document.getElementById('id_code');
-            const nameField = document.getElementById('id_name');
-    
-            const aromatData = {
-                {% for aromat in aromats %}
-                    '{{ aromat.code }}': '{{ aromat.name }}',
-                {% endfor %}
-            };
-    
-            const aromatDataReverse = {
-                {% for aromat in aromats %}
-                    '{{ aromat.name }}': '{{ aromat.code }}',
-                {% endfor %}
-            };
-    
-            codeField.addEventListener('change', function () {
-                const selectedCode = this.value;
-                console.log(selectedCode);
-                if (aromatData[selectedCode]) {
-                    nameField.value = aromatData[selectedCode];
-                } else {
-                    nameField.value = '';
-                }
-            });
-    
-            nameField.addEventListener('change', function () {
-                const selectedName = this.value;
-                if (aromatDataReverse[selectedName]) {
-                    codeField.value = aromatDataReverse[selectedName];
-                } else {
-                    codeField.value = '';
-                }
-            });
+    $(document).ready(function() {
+        const aromatData = {
+            {% for aromat in aromats %}
+                '{{ aromat.code }}': '{{ aromat.name }}',
+            {% endfor %}
+        };
+
+        const aromatDataReverse = {
+            {% for aromat in aromats %}
+                '{{ aromat.name }}': '{{ aromat.code }}',
+            {% endfor %}
+        };
+        
+        $('#id_code').on('change', function() {
+            const selectedCode = $(this).val();
+            const selectedName = $('#id_name');
+            if (aromatData[selectedCode]) {
+                selectedName.val(aromatData[selectedCode]);
+            } else {
+                selectedName.val('');
+            }
         });
+        
+        // Обработчик изменения выбранного названия аромата через Select2
+        $('#id_name').on('select2:select', function(e) {
+            const selectedName = $(this).val();
+            const selectedCode = $('#id_code');
+            if (aromatDataReverse[selectedName]) {
+                selectedCode.val(aromatDataReverse[selectedName]).trigger('change'); // Добавляем вызов события change
+            } else {
+                selectedCode.val('').trigger('change'); // Добавляем вызов события change
+        }
+        });
+        
+        // Инициализация Select2 для поля выбора кода аромата
+        $('#id_code').select2({
+            placeholder: 'Введите код аромата',
+            allowClear: true,
+            minimumInputLength: 1, // Минимальное количество символов для начала поиска
+            dropdownParent: $('#id_code').parent(), // Установка контейнера для выпадающего списка
+            language: {
+                inputTooShort: function() {
+                    return 'Пожалуйста, введите 1 или более символов';
+                }
+            }
+        });
+    });
     </script>
+    
+
+    
 
     <script>
         function confirmSubmit() {

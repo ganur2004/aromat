@@ -26,7 +26,8 @@ class AromatSoldForm(forms.ModelForm):
     ]
 
     code = forms.ChoiceField(choices=[], label='Код', widget=forms.Select(attrs={'id': 'id_code'}))
-    name = forms.ChoiceField(choices=[], label='Название аромата', widget=forms.Select(attrs={'id': 'id_name'}))
+    # name = forms.ChoiceField(choices=[], label='Название аромата', widget=forms.Select(attrs={'id': 'id_name', 'disabled': True}))
+    name = forms.CharField(max_length=100, label='Название аромата', widget=forms.TextInput(attrs={'id': 'id_name', 'readonly': True, "placeholder": 'Название аромата'}))
 
     def __init__(self, *args, **kwargs):
         branch = kwargs.pop('branch', None)  # Извлекаем филиал из kwargs
