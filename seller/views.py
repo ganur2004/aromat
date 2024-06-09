@@ -7,6 +7,7 @@ from django.utils import timezone
 from datetime import date as dt_date
 from django.db.models import Sum
 from decimal import Decimal, InvalidOperation
+from django.core.exceptions import ValidationError
 
 # Create your views here.
 
@@ -54,36 +55,56 @@ def aromat_sold(request):
     seller_id = request.session.get('seller_id')
     message = None
     if seller_id:
-        seller = Seller.objects.get(id=seller_id)
+        try:
+            seller = Seller.objects.get(id=seller_id)
+        except Seller.DoesNotExist:
+            return redirect('seller_login')
+
         branchname = seller.branch
         aromat_objects = Aromat.objects.filter(branch=branchname)
         if request.method == 'POST':
             form = AromatSoldForm(request.POST, branch=branchname)
             if form.is_valid():
                 code = form.cleaned_data['code']
-                aromat = aromat_objects.get(code=code)
                 name = form.cleaned_data['name']
                 size = form.cleaned_data['size']
                 paymenttype = form.cleaned_data['paymenttype']
                 price = form.cleaned_data['cost']
                 date = timezone.now()
-                coment = form.cleaned_data['coment'] or ""
+                coment = form.cleaned_data.get('coment', "")
                 sellername = seller_name
 
                 try:
+                    # Преобразование значений в Decimal и проверка корректности
                     size = Decimal(size)
                     price = Decimal(price)
+                    
+                    if size <= 0 or price <= 0:
+                        raise ValidationError("Размер и цена должны быть положительными числами.")
+                    
+                    # Проверка наличия аромата по коду
+                    aromat = aromat_objects.get(code=code)
                 except InvalidOperation:
-                    message = "Некорректное значение для размера или стоимости"
-
-                if aromat.volume >= size:
-                    volume = aromat.volume - size
-                    aromat.volume = volume
-                    new_sold_aromat = SoldAromat.objects.create(seller_id=seller_id, code=code, name=name, volume=volume, masla=size, paymenttype=paymenttype, price=price, date=date, sellername=sellername, branch=branchname, coment=coment)
-                    message = 'Продажа успешно сохранена!'
-                    aromat.save()
+                    message = "Некорректное значение для размера или стоимости."
+                except Aromat.DoesNotExist:
+                    message = "Аромат с указанным кодом не найден."
+                except ValidationError as ve:
+                    message = f"Ошибка валидации: {str(ve)}"
                 else:
-                    message = "Недостаточное количество товара!"
+                    if aromat.volume >= size:
+                        volume = aromat.volume - size
+                        aromat.volume = volume
+                        SoldAromat.objects.create(
+                            seller_id=seller_id, code=code, name=name, volume=volume,
+                            masla=size, paymenttype=paymenttype, price=price, date=date,
+                            sellername=sellername, branch=branchname, coment=coment
+                        )
+                        message = 'Продажа успешно сохранена!'
+                        aromat.save()
+                    else:
+                        message = "Недостаточное количество товара!"
+            else:
+                message = "Форма содержит ошибки. Проверьте введенные данные."
         else:
             form = AromatSoldForm(branch=branchname, initial={'date': timezone.now().date(), 'sellername': seller_name})
 

@@ -33,12 +33,13 @@ class AromatAddForm(forms.Form):
         widget=forms.TextInput(attrs={'placeholder': 'Код...', 'id': 'code'}),
         label="Код")
     aromatname = forms.CharField(
-        max_length=50,
+        max_length=255,
         widget=forms.TextInput(attrs={'placeholder': 'Название...', 'id': 'aromatname'}),
         label="Название аромата")
-    size = forms.IntegerField(
+    size = forms.DecimalField(
         widget=forms.NumberInput(attrs={'placeholder': 'Объем...', 'id': 'size', 'min': 0}),
-        label="Объем")
+        label="Объем",
+        max_digits=10, decimal_places=2)
 
 class SellerRegisterForm(forms.Form):
     lastname = forms.CharField(
