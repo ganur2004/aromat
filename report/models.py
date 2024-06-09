@@ -17,7 +17,7 @@ class Administrator(models.Model):
         )],
         verbose_name='Телефон'
     )
-    password = models.CharField(max_length=128, verbose_name='Пароль')
+    password = models.CharField(max_length=50, verbose_name='Пароль')
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
@@ -45,7 +45,7 @@ class Branch(models.Model):
 class Aromat(models.Model):
     code = models.CharField(max_length=5, verbose_name='Код')
     name = models.CharField(max_length=255, verbose_name='Название')
-    volume = models.DecimalField(max_digits=6, decimal_places=2, verbose_name='Объем')
+    volume = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Объем')
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE, verbose_name='Филиал')
 
     def __str__(self):
@@ -84,12 +84,12 @@ class SoldAromat(models.Model):
     seller = models.ForeignKey(Seller, on_delete=models.SET_NULL, null=True)
     code = models.CharField(max_length=5, verbose_name='Код')
     name = models.CharField(max_length=100, verbose_name='Название аромата')
-    volume = models.DecimalField(max_digits=6, decimal_places=2, verbose_name='Объем', default=0)
-    masla = models.DecimalField(max_digits=6, decimal_places=2, verbose_name='Масла', default=0)
+    volume = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Объем', default=0)
+    masla = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Масла', default=0)
     paymenttype = models.CharField(max_length=50, verbose_name='Тип оплаты')
-    price = models.DecimalField(max_digits=6, decimal_places=2, verbose_name='Касса', default=0)
+    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Касса', default=0)
     date = models.DateTimeField(verbose_name='Дата')
-    sellername = models.CharField(max_length=100, verbose_name='Имя продавца')
+    sellername = models.CharField(max_length=255, verbose_name='Имя продавца')
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE, verbose_name='Филиал')
     coment = models.CharField(null=True, verbose_name="Комментарий", max_length=5000)
 
